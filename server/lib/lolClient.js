@@ -81,12 +81,31 @@ class lolClient {
 
 			return ret.data;
 		} catch (e) {
-			// console.log(e.status());
-			// console.log('message ->',e.message);
-			// console.log('name ->',e.name);
-			// console.log('arguments ->',e.arguments);
-			// console.log('type ->',e.type);
-			// this.parseError(e);
+			throw new Meteor.Error('unknown-error');
+		}
+	}
+	findMatches(name) {
+		try {
+			var summoner = this.getSummonerByName(name);
+
+			var summonerId = summoner[this.standardizedSummonerName(name)].id;
+
+			let url = `https://${this.region}.api.pvp.net/api/lol/${this.region}/v2.2/matchlist/by-summoner/${summonerId}?beginIndex=0&endIndex=20&api_key=${this.apiKey}`;
+
+			var ret = HTTP.get(url);
+
+			// console.log('ret ->',ret);
+
+			if (ret.statusCode === 200) {
+				return ret.data;
+			} else if (ret.statusCode === 200) {
+				throw new Meteor.Error('no-summoner-data-found');
+			} else {
+				this.parseError(ret);
+			}
+
+			return ret.data;
+		} catch (e) {
 			throw new Meteor.Error('unknown-error');
 		}
 	}

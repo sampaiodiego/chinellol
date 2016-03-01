@@ -1,10 +1,20 @@
 Template.summoner.events({
-	'submit form'(event, instance) {
+	'click #summoner-info'(event, instance) {
+		event.preventDefault();
+
+		Meteor.call('findSummoner', $('#name').val(), $('#region').val(), (err, result) => {
+			console.log('err ->',err);
+
+			$('#result').html(JSON.stringify(result, null, '  '));
+		});
+	},
+	'click #game-info'(event, instance) {
 		event.preventDefault();
 
 		Meteor.call('findGame', $('#name').val(), $('#region').val(), (err, result) => {
 			console.log('err ->',err);
-			console.log('result ->',result);
+
+			$('#result').html(JSON.stringify(result, null, '  '));
 		});
 	}
 })
